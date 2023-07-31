@@ -231,11 +231,11 @@ def isPercolatorFile(headers):
 
 
 def isNativePercolatorFile(headers):
-    return 'psmid' in map(str.lower, headers)
+    return (not ('mokapot pep' in map(str.lower, headers))) and ('psmid' in map(str.lower, headers))
 
 
 def isMokapotFile(headers):
-    return 'specid' in map(str.lower, headers)
+    return 'mokapot pep' in map(str.lower, headers) and ('psmid' in map(str.lower, headers))
 
 
 def getDelimiter(filename: str):
@@ -260,12 +260,12 @@ def getPercolatorColumnIdxs(headers):
         postErrProbCol = get_column_index(headers, 'posterior_error_prob')
         proteinCol = get_column_index(headers, 'proteinIds')
     elif isMokapotFile(headers):
-        idCol = get_column_index(headers, 'SpecId')
-        peptCol = get_column_index(headers, 'Peptide')
-        scoreCol = get_column_index(headers, 'mokapot score')
-        qvalCol = get_column_index(headers, 'mokapot q-value')
-        postErrProbCol = get_column_index(headers, 'mokapot PEP')
-        proteinCol = get_column_index(headers, 'Proteins')
+        idCol = headers.index('PSMId')
+        peptCol = headers.index('Peptide')
+        scoreCol = headers.index('score')
+        qvalCol = headers.index('q-value')
+        postErrProbCol = headers.index('mokapot PEP')
+        proteinCol = headers.index('proteinIds')
     else:
         raise ValueError("Could not determine percolator input file format. The file should either contain a column named PSMId (native percolator) or SpecId (mokapot).")
     return idCol, peptCol, scoreCol, qvalCol, postErrProbCol, proteinCol
